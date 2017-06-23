@@ -4,25 +4,29 @@
   "main": "server.js",
   "license": "MIT",
   "scripts": {
-    "build": "webpack",
-    "watch": "run-p watch:*",
+    "start": "NODE_ENV=production node lib/server.js",
+    "build": "NODE_ENV=production run-s build:*",
+    "build:client": "webpack",
+    "build:server": "babel -d lib src",
+    "watch": "run-s build:client; run-p watch:*",
     "watch:client": "webpack -w",
-    "watch:server": "nodemon --exec yarn start:dev",
-    "start:dev": "babel-node src/server.js",
-    "start": "NODE_ENV=production babel-node src/server.js"
+    "watch:server": "nodemon --exec babel-node src/server.js",
+    "watch:src": "babel -d lib src -w"
   },
   "dependencies": {
+    "babel-polyfill": "^6.23.0",
     "express": "^4.15.3",
     "prop-types": "^15.5.10",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-redux": "^5.0.5",
-    "redis": "^2.7.1",
     "redux": "^3.7.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.25.0",
     "babel-loader": "^7.1.0",
-    "babel-polyfill": "^6.23.0",
+    "babel-preset-env": "^1.5.2",
     "babel-preset-flow": "^6.23.0",
     "babel-preset-react": "^6.24.1",
     "nodemon": "^1.11.0",

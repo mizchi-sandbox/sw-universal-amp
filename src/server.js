@@ -15,7 +15,7 @@ function renderFullPage(initialState: any) {
   return `<!DOCTYPE html>
 <html>
   <head>
-    <meta charSet="utf-8" >
+    <meta charset="utf-8" >
   </head>
   <body>
     <main>${html}</main>
