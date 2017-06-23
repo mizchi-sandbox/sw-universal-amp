@@ -1,7 +1,7 @@
 {
   "name": "ssr",
   "version": "1.0.0",
-  "main": "server.js",
+  "private": true,
   "license": "MIT",
   "scripts": {
     "start": "NODE_ENV=production node lib/server.js",
