@@ -1,0 +1,32 @@
+{
+  "name": "ssr",
+  "version": "1.0.0",
+  "main": "server.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack",
+    "watch": "run-p watch:*",
+    "watch:client": "webpack -w",
+    "watch:server": "nodemon --exec yarn start:dev",
+    "start:dev": "babel-node src/server.js",
+    "start": "NODE_ENV=production babel-node src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.15.3",
+    "prop-types": "^15.5.10",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-redux": "^5.0.5",
+    "redis": "^2.7.1",
+    "redux": "^3.7.0"
+  },
+  "devDependencies": {
+    "babel-loader": "^7.1.0",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-flow": "^6.23.0",
+    "babel-preset-react": "^6.24.1",
+    "nodemon": "^1.11.0",
+    "npm-run-all": "^4.0.2",
+    "webpack": "^3.0.0"
+  }
+}

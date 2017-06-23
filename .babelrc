@@ -1,0 +1,12 @@
+{
+  "presets": [
+    "flow", "react",
+    [
+      "env", {
+        "exclude": [
+          "transform-regenerator"
+        ]
+      }
+    ]
+  ]
+}
