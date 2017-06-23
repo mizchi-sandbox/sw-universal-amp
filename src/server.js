@@ -1,37 +1,27 @@
 /* @flow */
+import url from 'url'
 import express from 'express'
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import { Provider } from 'react-redux'
 import createStore from './store'
 import App from './components/App'
+import AmpLayout from './layouts/amp.js'
+import SpaLayout from './layouts/spa'
 
-function renderFullPage(initialState: any) {
+function renderPage(url, state: any, opts: { amp?: boolean } = {}) {
+  const title = 'article:' + state.id
   const html = ReactDOMServer.renderToString(
-    <Provider store={createStore(initialState)}>
+    <Provider store={createStore(state)}>
       <App />
     </Provider>
   )
-  return `<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" >
-  </head>
-  <body>
-    <main>${html}</main>
-    <script>
-      window.__PRELOADED_STATE__ = ${JSON.stringify(initialState).replace(
-        /</g,
-        '\\u003c'
-      )}
-    </script>
-    <script src="/bundle.js"></script>
-  </body>
-</html>
-  `
+  return !!opts.amp
+    ? AmpLayout(url, title, html)
+    : SpaLayout(url, title, html, state)
 }
 
-const load = input => {
+const loadState = input => {
   return {
     url: input.url,
     createdAt: Date.now()
@@ -39,24 +29,39 @@ const load = input => {
 }
 
 const server = express()
+// middleware
 server.use(express.static(__dirname + '/../public'))
+// load params
 server.use(async (req, res, next) => {
-  const params = await load({ url: req.url })
+  const params = await loadState({ url: req.url })
   req.builtParams = params
   next()
 })
 
-server.get('*', (req, res) => {
+server.get('/api/article/:id', (req, res) => {})
+
+server.get('/article/:id/amp', (req, res) => {
+  const initialState = req.builtParams
+  const html = renderPage(
+    req.url,
+    { ...initialState, ...req.params },
+    { amp: true }
+  )
+  res.setHeader('content-type', 'text/html')
+  res.send(html)
+})
+
+server.get('/article/:id', (req, res) => {
   const initialState = req.builtParams
   if (req.headers['content-type'] === 'applicaiton/json') {
     res.setHeader('content-type', 'applicaiton/json')
     return res.send(initialState)
   }
-  const html = renderFullPage(initialState)
+  const html = renderPage(req.url, { ...initialState, ...req })
   res.setHeader('content-type', 'text/html')
   res.send(html)
 })
 
 server.listen(9999, () => {
-  console.log('server started:', 99999)
+  console.log('server started:', 9999)
 })
