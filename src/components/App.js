@@ -3,8 +3,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import strategies from '../strategies'
-
 const mapStateToProps = state => state
 
 const fetchUrlState = async (url: string) => {

@@ -6,7 +6,7 @@ export type State = {
   createdAt: number
 }
 
-const rootReducer = (state: State, action: Action) => {
+const rootReducer = (state: State, action: any) => {
   switch (action.type) {
     default:
       return state
