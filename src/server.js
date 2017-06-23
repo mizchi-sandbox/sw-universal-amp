@@ -53,9 +53,10 @@ server.get('*', (req, res) => {
     return res.send(initialState)
   }
   const html = renderFullPage(initialState)
-  console.log('render html', html)
   res.setHeader('content-type', 'text/html')
   res.send(html)
 })
 
-server.listen(9999)
+server.listen(9999, () => {
+  console.log('server started:', 99999)
+})
