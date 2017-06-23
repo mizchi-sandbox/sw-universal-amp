@@ -9,7 +9,8 @@ import App from './components/App'
 import AmpLayout from './layouts/amp.js'
 import SpaLayout from './layouts/spa'
 
-function renderPage(url, state: any, opts: { amp?: boolean } = {}) {
+async function renderPage(state: any, opts: { amp?: boolean } = {}) {
+  const url = state.url
   const title = 'article:' + state.id
   const html = ReactDOMServer.renderToString(
     <Provider store={createStore(state)}>
@@ -17,7 +18,7 @@ function renderPage(url, state: any, opts: { amp?: boolean } = {}) {
     </Provider>
   )
   return !!opts.amp
-    ? AmpLayout(url, title, html)
+    ? AmpLayout(url, title, html, state)
     : SpaLayout(url, title, html, state)
 }
 
@@ -26,6 +27,28 @@ const loadState = input => {
     url: input.url,
     createdAt: Date.now()
   }
+}
+
+const defineRouteWithAmp = (server, pattern) => {
+  server.get(`/${pattern}.json`, (req, res) => {
+    const initialState = { ...req.builtParams, ...req.params }
+    res.setHeader('content-type', 'applicaiton/json')
+    res.send(initialState)
+  })
+
+  server.get(`/${pattern}`, async (req, res) => {
+    const initialState = { ...req.builtParams, ...req.params }
+    const html = await renderPage(initialState)
+    res.setHeader('content-type', 'text/html')
+    res.send(html)
+  })
+
+  server.get(`/amp/${pattern}`, async (req, res) => {
+    const initialState = { ...req.builtParams, ...req.params }
+    const html = await renderPage(initialState, { amp: true })
+    res.setHeader('content-type', 'text/html')
+    res.send(html)
+  })
 }
 
 const server = express()
@@ -38,29 +61,7 @@ server.use(async (req, res, next) => {
   next()
 })
 
-server.get('/api/article/:id', (req, res) => {})
-
-server.get('/article/:id/amp', (req, res) => {
-  const initialState = req.builtParams
-  const html = renderPage(
-    req.url,
-    { ...initialState, ...req.params },
-    { amp: true }
-  )
-  res.setHeader('content-type', 'text/html')
-  res.send(html)
-})
-
-server.get('/article/:id', (req, res) => {
-  const initialState = req.builtParams
-  if (req.headers['content-type'] === 'applicaiton/json') {
-    res.setHeader('content-type', 'applicaiton/json')
-    return res.send(initialState)
-  }
-  const html = renderPage(req.url, { ...initialState, ...req.params })
-  res.setHeader('content-type', 'text/html')
-  res.send(html)
-})
+defineRouteWithAmp(server, 'article/:id')
 
 server.listen(9999, () => {
   console.log('server started:', 9999)
