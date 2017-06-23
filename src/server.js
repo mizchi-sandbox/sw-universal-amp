@@ -57,7 +57,7 @@ server.get('/article/:id', (req, res) => {
     res.setHeader('content-type', 'applicaiton/json')
     return res.send(initialState)
   }
-  const html = renderPage(req.url, { ...initialState, ...req })
+  const html = renderPage(req.url, { ...initialState, ...req.params })
   res.setHeader('content-type', 'text/html')
   res.send(html)
 })
