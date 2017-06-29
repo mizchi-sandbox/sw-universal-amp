@@ -1,3 +1,5 @@
 public/bundle.js
+public/sw.js
+public/sw-register.js
 node_modules
 lib

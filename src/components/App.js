@@ -16,7 +16,7 @@ export default connect(mapStateToProps)(function App(props: any) {
   return (
     <div>
       <a href="/">Top</a>
-      <h1>{props.url}</h1>
+      <h2>{props.url}</h2>
       <p>Generated at {props.createdAt}</p>
     </div>
   )

@@ -54,7 +54,18 @@ const defineRouteWithAmp = (server, pattern) => {
 const server = express()
 // middleware
 server.use(express.static(__dirname + '/../public'))
+
 // load params
+server.get(`/api/data.json`, (req, res) => {
+  res.send({
+    items: [
+      {
+        at: Date.now()
+      }
+    ]
+  })
+})
+
 server.use(async (req, res, next) => {
   const params = await loadState({ url: req.url })
   req.builtParams = params

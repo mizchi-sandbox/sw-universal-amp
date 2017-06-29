@@ -1,8 +1,12 @@
 /* eslint-disable */
 module.exports = {
-  entry: ['./src/client.js'],
+  entry: {
+    bundle: './src/client.js',
+    sw: './src/sw.js',
+    'sw-register': './src/sw-register.js'
+  },
   output: {
-    filename: 'bundle.js',
+    filename: '[name].js',
     path: __dirname + '/public',
     publicPath: '/'
   },
